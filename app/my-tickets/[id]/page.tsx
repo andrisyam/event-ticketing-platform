@@ -74,7 +74,7 @@ export default async function TicketDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
-      <Header />
+      <Header user={user} />
 
       <main className="flex-1 py-8">
         <div className="mx-auto max-w-lg px-4 sm:px-6">

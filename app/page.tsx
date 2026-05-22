@@ -90,7 +90,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header user={user} />
 
       <main className="flex-1">
         {/* Hero Section */}

@@ -14,6 +14,7 @@ import {
   PartyPopper,
   Calendar 
 } from "lucide-react"
+import { getUser } from '@/lib/auth'
 
 const iconMap: Record<string, React.ReactNode> = {
   trophy: <Trophy className="h-8 w-8" />,
@@ -27,6 +28,9 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default async function CategoriesPage() {
   const supabase = await createClient()
+  const user = await getUser()
+
+  // console.log("USER:", user)
   
   const { data: categories } = await supabase
     .from("event_categories")
@@ -35,7 +39,7 @@ export default async function CategoriesPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+      <Header user={user} />
       <main className="flex-1">
         <div className="bg-primary/5 py-12 md:py-16">
           <div className="container mx-auto px-4">

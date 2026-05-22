@@ -44,7 +44,10 @@ async function getTicketCount(eventId: string): Promise<number> {
 
 export default async function EventDetailPage({ params }: PageProps) {
   const { slug } = await params
-  const event = await getEvent(slug)
+  const [user, event] = await Promise.all([
+    getUser(),
+    getEvent(slug),
+  ])
 
   if (!event) {
     notFound()
@@ -90,7 +93,7 @@ export default async function EventDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header user={user} />
 
       <main className="flex-1">
         {/* Hero Banner */}
@@ -282,7 +285,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                     <div className="mt-6 space-y-3">
                       <RegisterButton
                         eventId={event.id}
-                        isLoggedIn={false}
+                        isLoggedIn={!!user}
                         isOpen={isRegistrationOpen()}
                         price={event.price}
                       />

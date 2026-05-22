@@ -83,6 +83,7 @@ async function getRecentUsers(): Promise<Profile[]> {
 
 export default async function AdminDashboardPage() {
   const user = await getUser()
+  // console.log('USER', user)
   
   if (!user) {
     redirect('/auth/login?redirect=/admin')
