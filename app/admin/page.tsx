@@ -10,20 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import type { Profile, Event } from '@/lib/types'
 import { AdminSidebar } from './sidebar'
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
-}
+import { getUser } from '@/lib/auth'
 
 async function getAdminStats() {
   const supabase = await createClient()

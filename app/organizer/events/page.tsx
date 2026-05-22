@@ -14,20 +14,8 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import type { Profile, Event } from '@/lib/types'
 import { OrganizerSidebar } from '../sidebar'
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
-}
+import Image from 'next/image'
+import { getUser } from '@/lib/auth'
 
 async function getEvents(organizerId: string): Promise<Event[]> {
   const supabase = await createClient()
@@ -128,10 +116,11 @@ export default async function OrganizerEventsPage() {
                       {/* Event Image */}
                       <div className="md:w-48 h-32 md:h-auto bg-muted flex-shrink-0">
                         {event.banner_image ? (
-                          <img
+                          <Image
                             src={event.banner_image}
                             alt={event.title}
-                            className="h-full w-full object-cover"
+                            fill
+                            className="object-cover"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">

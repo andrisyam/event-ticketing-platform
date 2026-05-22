@@ -15,26 +15,14 @@ import { createClient } from '@/lib/supabase/server'
 import type { Profile, Event } from '@/lib/types'
 import { AdminSidebar } from '../sidebar'
 import { EventActions } from './event-actions'
+import Image from 'next/image'
+import { getUser } from '@/lib/auth'
 
 interface PageProps {
   searchParams: Promise<{
     status?: string
     q?: string
   }>
-}
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
 }
 
 async function getEvents(status?: string, search?: string): Promise<Event[]> {
@@ -165,12 +153,13 @@ export default async function AdminEventsPage({ searchParams }: PageProps) {
                   <CardContent className="p-0">
                     <div className="flex flex-col md:flex-row">
                       {/* Event Image */}
-                      <div className="md:w-48 h-32 md:h-auto bg-muted flex-shrink-0">
+                      <div className="relative md:w-48 h-32 md:h-auto bg-muted flex-shrink-0">
                         {event.banner_image ? (
-                          <img
+                          <Image
                             src={event.banner_image}
                             alt={event.title}
-                            className="h-full w-full object-cover"
+                            fill
+                            className="object-cover"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">

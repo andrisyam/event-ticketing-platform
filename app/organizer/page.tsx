@@ -10,20 +10,8 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import type { Profile, Event } from '@/lib/types'
 import { OrganizerSidebar } from './sidebar'
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
-}
+import Image from 'next/image'
+import { getUser } from '@/lib/auth'
 
 async function getDashboardStats(organizerId: string) {
   const supabase = await createClient()
@@ -238,10 +226,11 @@ export default async function OrganizerDashboardPage() {
                       <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                           {event.banner_image ? (
-                            <img
+                            <Image
                               src={event.banner_image}
                               alt={event.title}
-                              className="h-full w-full object-cover"
+                              fill
+                              className="object-cover"
                             />
                           ) : (
                             <Calendar className="h-5 w-5 text-muted-foreground" />

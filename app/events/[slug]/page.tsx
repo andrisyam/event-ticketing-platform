@@ -9,23 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import type { Event, Profile } from '@/lib/types'
 import { RegisterButton } from './register-button'
+import Image from 'next/image'
+import { getUser } from '@/lib/auth'
 
 interface PageProps {
   params: Promise<{ slug: string }>
-}
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
 }
 
 async function getEvent(slug: string): Promise<Event | null> {
@@ -56,10 +44,7 @@ async function getTicketCount(eventId: string): Promise<number> {
 
 export default async function EventDetailPage({ params }: PageProps) {
   const { slug } = await params
-  const [user, event] = await Promise.all([
-    getUser(),
-    getEvent(slug),
-  ])
+  const event = await getEvent(slug)
 
   if (!event) {
     notFound()
@@ -105,16 +90,17 @@ export default async function EventDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header user={user} />
+      <Header />
 
       <main className="flex-1">
         {/* Hero Banner */}
         <div className="relative h-[300px] sm:h-[400px] bg-muted">
           {event.banner_image ? (
-            <img
+            <Image
               src={event.banner_image}
               alt={event.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
@@ -296,7 +282,7 @@ export default async function EventDetailPage({ params }: PageProps) {
                     <div className="mt-6 space-y-3">
                       <RegisterButton
                         eventId={event.id}
-                        isLoggedIn={!!user}
+                        isLoggedIn={false}
                         isOpen={isRegistrationOpen()}
                         price={event.price}
                       />

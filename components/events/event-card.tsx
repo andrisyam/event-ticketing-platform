@@ -3,6 +3,7 @@ import { Calendar, MapPin, Users, Tag } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Event } from '@/lib/types'
+import Image from 'next/image'
 
 interface EventCardProps {
   event: Event
@@ -37,10 +38,11 @@ export function EventCard({ event, variant = 'default' }: EventCardProps) {
         {/* Image */}
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {event.banner_image ? (
-            <img
+            <Image
               src={event.banner_image}
               alt={event.title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              fill
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">

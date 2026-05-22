@@ -8,20 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
 import type { Profile, Ticket as TicketType } from '@/lib/types'
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
-}
+import Image from 'next/image'
+import { getUser } from '@/lib/auth'
 
 async function getMyTickets(userId: string): Promise<TicketType[]> {
   const supabase = await createClient()
@@ -74,7 +62,7 @@ export default async function MyTicketsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header user={user} />
+      <Header />
 
       <main className="flex-1 py-8">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -94,10 +82,11 @@ export default async function MyTicketsPage() {
                       {/* Event Image */}
                       <div className="sm:w-48 h-32 sm:h-auto bg-muted flex-shrink-0">
                         {ticket.event?.banner_image ? (
-                          <img
-                            src={ticket.event.banner_image}
-                            alt={ticket.event.title}
-                            className="h-full w-full object-cover"
+                          <Image
+                            src={event.banner_image}
+                            alt={event.title}
+                            fill
+                            className="object-cover"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">

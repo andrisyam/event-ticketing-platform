@@ -14,26 +14,13 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import type { Profile } from '@/lib/types'
 import { AdminSidebar } from '../sidebar'
+import { getUser } from '@/lib/auth'
 
 interface PageProps {
   searchParams: Promise<{
     role?: string
     q?: string
   }>
-}
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
 }
 
 async function getUsers(role?: string, search?: string): Promise<Profile[]> {

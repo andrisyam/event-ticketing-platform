@@ -8,20 +8,7 @@ import { CategoryGrid } from '@/components/events/category-grid'
 import { EventCard } from '@/components/events/event-card'
 import { createClient } from '@/lib/supabase/server'
 import type { Event, EventCategory, Profile } from '@/lib/types'
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
-}
+import { getUser } from '@/lib/auth'
 
 async function getCategories(): Promise<EventCategory[]> {
   const supabase = await createClient()
@@ -103,7 +90,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header user={user} />
+      <Header />
 
       <main className="flex-1">
         {/* Hero Section */}

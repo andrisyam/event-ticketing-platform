@@ -9,23 +9,10 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
 import type { Profile, Ticket } from '@/lib/types'
 import { QRCodeDisplay } from './qr-code'
+import { getUser } from '@/lib/auth'
 
 interface PageProps {
   params: Promise<{ id: string }>
-}
-
-async function getUser(): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
 }
 
 async function getTicket(ticketId: string, userId: string): Promise<Ticket | null> {
@@ -87,7 +74,7 @@ export default async function TicketDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
-      <Header user={user} />
+      <Header />
 
       <main className="flex-1 py-8">
         <div className="mx-auto max-w-lg px-4 sm:px-6">
