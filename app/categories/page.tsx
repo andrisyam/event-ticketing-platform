@@ -29,8 +29,6 @@ const iconMap: Record<string, React.ReactNode> = {
 export default async function CategoriesPage() {
   const supabase = await createClient()
   const user = await getUser()
-
-  // console.log("USER:", user)
   
   const { data: categories } = await supabase
     .from("event_categories")
